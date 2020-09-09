@@ -36,7 +36,7 @@ object EnvironmentConfiguration {
 
 /**
   * Implementation of the environment configuration that reads the values from env variables.
-  * These can be set at runtime, e.g. via bash for CICD testing against different configurations
+  * These can be set at runtime, e.g. via bash for CICD testing against different configurations.
   */
 object EnvPropertiesEnvironmentConfiguration extends EnvironmentConfiguration {
 

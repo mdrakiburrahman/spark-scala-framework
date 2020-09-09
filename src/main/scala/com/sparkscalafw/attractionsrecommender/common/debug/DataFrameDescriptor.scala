@@ -26,11 +26,19 @@ object DataFrameDescriptor {
     }
 }
 
+/**
+  * Override the describe command to perform no actions.
+  * Useful for Production Pipelines containing PII data, or large datasets that are expensive to materialize on Spark Driver.
+  */
 class NoOpDataFrameDescriptor extends DataFrameDescriptor {
 
   override def describe(df: DataFrame): Unit = {}
 }
 
+/**
+  * Override the describe command to show the dataset, as well as the statistics.
+  * Can be expanded upon to formulate an aligned set of actions, including usage of external libraries.
+  */
 class DebugDataFrameDescriptor extends DataFrameDescriptor {
 
   override def describe(df: DataFrame): Unit = {

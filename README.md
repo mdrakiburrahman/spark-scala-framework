@@ -26,29 +26,29 @@ A visual representation is presented below:<br><br>
     │                   │   │       EnvironmentConfiguration.scala             <- Utility object holding the environment configuration for the whole system, including environment variables at runtime.
     │                   │   │
     │                   │   ├───debug                                          <- Subdirectory for holding debugging modules.
-    │                   │   │       DataFrameDescriptor.scala                  <- Modular Data Descriptor to enable verbose debugging on datasets, to be used on non-PROD pipelines.
+    │                   │   │       DataFrameDescriptor.scala                  <- Modular data descriptor class to toggle verbose debugging on datasets, to be used on non-PROD pipelines.
     │                   │   │
     │                   │   ├───feeds                                          <- An abstraction to put data updates in a given path and get an update from path, useful for large, intermediate datasets.
-    │                   │   │   │   Feed.scala                                 <-
+    │                   │   │   │   Feed.scala                                 <- Defines detailed behavior of a Feed, while delegating IO operations to a specific FeedIO object.
     │                   │   │   │
-    │                   │   │   ├───alsmodel                                   <-
-    │                   │   │   │       AlsModelFeed.scala                     <-
+    │                   │   │   ├───alsmodel                                   <- Feed for Spark ML's Alternating Least Squares Model.
+    │                   │   │   │       AlsModelFeed.scala                     <- Extends the FeedIO class to support Spark ALS Model specific reads & writes.
     │                   │   │   │
-    │                   │   │   ├───attractions                                <-
-    │                   │   │   │       AttractionsColumnNames.scala           <-
-    │                   │   │   │       AttractionsFeed.scala                  <-
+    │                   │   │   ├───attractions                                <- POI Dataset.
+    │                   │   │   │       AttractionsColumnNames.scala           <- Feed Specific Schema.
+    │                   │   │   │       AttractionsFeed.scala                  <- Returns DataFrame object from CSV.
     │                   │   │   │
-    │                   │   │   ├───io                                         <-
-    │                   │   │   │       CsvFeedIO.scala                        <-
-    │                   │   │   │       FeedIO.scala                           <-
-    │                   │   │   │       ParquetFeedIO.scala                    <-
+    │                   │   │   ├───io                                         <- Subdirectory for holding all Feed Input/Output related modules.
+    │                   │   │   │       CsvFeedIO.scala                        <- Encapsulates CSV specific Feed related method definitions, with specific Spark syntax.
+    │                   │   │   │       FeedIO.scala                           <- Encapsulates high-level Feed related methods and field definitions, in particular read and write.
+    │                   │   │   │       ParquetFeedIO.scala                    <- Encapsulates Parquet specific Feed related method definitions, with specific Spark syntax.
     │                   │   │   │
-    │                   │   │   └───visits                                     <-
-    │                   │   │           VisitsColumnNames.scala                <-
-    │                   │   │           VisitsFeed.scala                       <-
+    │                   │   │   └───visits                                     <- User Visits Dataset.
+    │                   │   │           VisitsColumnNames.scala                <- Feed Specific Schema.
+    │                   │   │           VisitsFeed.scala                       <- Returns DataFrame object from Parquet.
     │                   │   │
     │                   │   └───spark                                          <- Contains all Spark Session/Context related artifacts.
-    │                   │           SparkSessionManager.scala                  <- Utility for managing the provisioning of a Spark session. Supports local and distributed (i.e. Databricks, Synapse).
+    │                   │           SparkSessionManager.scala                  <- Utility for managing the provisioning of a Spark session. Supports both local and distributed (i.e. Databricks, Synapse).
     │                   │
     │                   ├───etl                                                <- Contains ETL components used to perform operations on data.
     │                   │   │   EtlDriver.scala                                <- 
@@ -88,19 +88,19 @@ A visual representation is presented below:<br><br>
     │                               AlsAttractionsRecommenderTrainer.scala     <-
     │
     └───test                                                                   <- Artifact producing source directory for Testing Framework.
-        ├───data                                                               <- Subdirectory for integration testing with data (can be pointer to ADLS).
-        │   └───sigir17                                                        <- Subdirectory for data sources (can be pointer to ADLS).
-        │       ├───poiList-sigir17                                            <- 
-        │       │       POI-caliAdv.csv                                        <- 
-        │       │       POI-disHolly.csv                                       <- 
-        │       │       POI-disland.csv                                        <-  
-        │       │       POI-epcot.csv                                          <- 
-        │       │       POI-MagicK.csv                                         <- 
-        │       │       README.txt                                             <- 
+        ├───data                                                               <- Subdirectory for integration testing with data (can be pointer to ADLS instead).
+        │   └───sigir17                                                        <- Subdirectory for data sources.
+        │       ├───poiList-sigir17                                            <- This Master dataset comprises various attractions/points-of-interest (POI) that are found in each of the 5 theme parks.
+        │       │       POI-caliAdv.csv                                        <- California Adventure POIs.
+        │       │       POI-disHolly.csv                                       <- Disney Hollywood POIs.
+        │       │       POI-disland.csv                                        <- Disneyland POIs.
+        │       │       POI-epcot.csv                                          <- Epcot POIs.
+        │       │       POI-MagicK.csv                                         <- Magic Kindgom POIs.
+        │       │       README.txt                                             <- Dataset Information.
         │       │
-        │       └───userVisits-sigir17                                         <- 
-        │               README.txt                                             <- 
-        │               userVisits-disHolly-allPOI.csv                         <- 
+        │       └───userVisits-sigir17                                         <- This Transactional dataset comprises a set of users and their visits to various attractions in 5 theme parks.
+        │               README.txt                                             <- Dataset Information.
+        │               userVisits-disHolly-allPOI.csv                         <- Disney Hollywood User Visit Records.
         │
         └───scala                                                              <- Subdirectory for package hierarchy.
             └───com                                                            <- ...
