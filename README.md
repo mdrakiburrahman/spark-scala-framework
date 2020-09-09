@@ -1,10 +1,115 @@
-# `Spark-Scala-Framework` on Attractions Recommender
+# `Spark-Scala-Framework`: A reusable ETL Framework, demonstrated on *Attractions Recommender* Pipeline
+<img src="https://image.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-260nw-1037719192.jpg" width="200"><br>
+----------
 ## Overview
-This repository presents an approach to creating a complete **Software Product/Reusable ETL Framework** on top of the prototype *Recommendation Pipeline* developed in [INSERT LEGACY ETL CODE LINK](google.ca).<br>
+This repository presents an organized approach at creating a complete ***"Software Product"*-style Reusable ETL Framework** on top of the Prototype/R&D *Recommendation Pipeline* developed in [INSERT LEGACY ETL CODE LINK](google.ca).<br>
 
 A visual representation is presented below:<br><br>
 <img src="https://image.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-260nw-1037719192.jpg" width="400"><br>
 
+## Repository Structure
+----------
+```console
+│   pom.xml                                                                    <- Contains configurations (dependencies, build/source/test, plugins etc.) for maven build.
+│   README.md                                                                  <- The top-level README for developers using this project.
+└───src                                                                        <- Contains all of the source material for building the project.
+    ├───main                                                                   <- Artifact producing source directory for ETL Framework.
+    │   └───scala                                                              <- Subdirectory for package hierarchy.
+    │       └───com                                                            <- ... 
+    │           └───sparkscalafw                                               <- ...
+    │               └───attractionsrecommender                                 <- ... 
+    │                   │   FileSystemDriver.scala                             <- 
+    │                   │   InMemoryDriver.scala                               <-
+    │                   │
+    │                   ├───common                                             <- Contains common definitions and utilities shared by many components.
+    │                   │   ├───config                                         <- Subdirectory for holding configuration files.
+    │                   │   │       EnvironmentConfiguration.scala             <- Utility object holding the environment configuration for the whole system, including environment variables at runtime.
+    │                   │   │
+    │                   │   ├───debug                                          <- Subdirectory for holding debugging modules.
+    │                   │   │       DataFrameDescriptor.scala                  <- Modular Data Descriptor to enable verbose debugging on datasets, to be used on non-PROD pipelines.
+    │                   │   │
+    │                   │   ├───feeds                                          <- An abstraction to put data updates in a given path and get an update from path, useful for large, intermediate datasets.
+    │                   │   │   │   Feed.scala                                 <-
+    │                   │   │   │
+    │                   │   │   ├───alsmodel                                   <-
+    │                   │   │   │       AlsModelFeed.scala                     <-
+    │                   │   │   │
+    │                   │   │   ├───attractions                                <-
+    │                   │   │   │       AttractionsColumnNames.scala           <-
+    │                   │   │   │       AttractionsFeed.scala                  <-
+    │                   │   │   │
+    │                   │   │   ├───io                                         <-
+    │                   │   │   │       CsvFeedIO.scala                        <-
+    │                   │   │   │       FeedIO.scala                           <-
+    │                   │   │   │       ParquetFeedIO.scala                    <-
+    │                   │   │   │
+    │                   │   │   └───visits                                     <-
+    │                   │   │           VisitsColumnNames.scala                <-
+    │                   │   │           VisitsFeed.scala                       <-
+    │                   │   │
+    │                   │   └───spark                                          <- Contains all Spark Session/Context related artifacts.
+    │                   │           SparkSessionManager.scala                  <- Utility for managing the provisioning of a Spark session. Supports local and distributed (i.e. Databricks, Synapse).
+    │                   │
+    │                   ├───etl                                                <- Contains ETL components used to perform operations on data.
+    │                   │   │   EtlDriver.scala                                <- 
+    │                   │   │
+    │                   │   ├───attractions                                    <-
+    │                   │   │   │   AttractionsLoader.scala                    <-
+    │                   │   │   │
+    │                   │   │   └───sigir                                      <-
+    │                   │   │           SigirAttractionsLoader.scala           <-
+    │                   │   │
+    │                   │   └───visits                                         <-
+    │                   │       │   VisitsLoader.scala                         <-
+    │                   │       │
+    │                   │       └───sigir                                      <-
+    │                   │               SigirVisitsLoader.scala                <-
+    │                   │
+    │                   ├───serving                                            <- Loads trained model and exposes a recommendations service. Supports different recommenders to coexist for A/B testing etc.
+    │                   │   │   ServingDriver.scala                            <-
+    │                   │   │
+    │                   │   └───recommender                                    <-
+    │                   │       │   AttractionsRecommender.scala               <-
+    │                   │       │
+    │                   │       ├───mapping                                    <-
+    │                   │       │       MappingAttractionsRecommender.scala    <-
+    │                   │       │
+    │                   │       ├───paneling                                   <-
+    │                   │       │       PaneledAttractionsRecommender.scala    <-
+    │                   │       │
+    │                   │       └───spark                                      <-
+    │                   │               AlsAttractionsRecommender.scala        <-
+    │                   │
+    │                   └───training                                           <- Reads transformed Training Data Feeds/Data Frames/Data Sets and trains ML models.
+    │                       │   EtlAndTrainingDriver.scala                     <- 
+    │                       │   TrainingDriver.scala                           <-
+    │                       │
+    │                       └───spark                                          <-
+    │                               AlsAttractionsRecommenderTrainer.scala     <-
+    │
+    └───test                                                                   <- Artifact producing source directory for Testing Framework.
+        ├───data                                                               <- Subdirectory for integration testing with data (can be pointer to ADLS).
+        │   └───sigir17                                                        <- Subdirectory for data sources (can be pointer to ADLS).
+        │       ├───poiList-sigir17                                            <- 
+        │       │       POI-caliAdv.csv                                        <- 
+        │       │       POI-disHolly.csv                                       <- 
+        │       │       POI-disland.csv                                        <-  
+        │       │       POI-epcot.csv                                          <- 
+        │       │       POI-MagicK.csv                                         <- 
+        │       │       README.txt                                             <- 
+        │       │
+        │       └───userVisits-sigir17                                         <- 
+        │               README.txt                                             <- 
+        │               userVisits-disHolly-allPOI.csv                         <- 
+        │
+        └───scala                                                              <- Subdirectory for package hierarchy.
+            └───com                                                            <- ...
+                └───sparkscalafw                                               <- ...
+                    └───attractionsrecommender                                 <- ...
+                            FullIntegrationTest.scala                          <- 
+```
+----------
+## Feature Description
 ### JAR Compilation
 Use `mvn install` for creating a [Fat JAR with Maven](http://tutorials.jenkov.com/maven/maven-build-fat-jar.html) containing all the dependencies compiled. <br>
 
@@ -54,7 +159,7 @@ A few driver apps are included for the different components. Even though these s
 ### Debugging
 
 The common package contains a DataFrame descriptor utility that is only initiated - by design - when `debug` is configured to be enabled:<br>
-<img src="img/4.png" width="800"><br><br>
+<img src="img/4.png" width="800"><br>
 
 This is *extremely useful*, because:
 - We want to use the same code in `DEV`, `TEST` & `PROD` without commenting out lines for verbose logging
