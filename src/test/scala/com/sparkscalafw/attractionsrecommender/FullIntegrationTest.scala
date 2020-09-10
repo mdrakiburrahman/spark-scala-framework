@@ -25,12 +25,13 @@ class FullIntegrationTest extends AnyFunSpec with Matchers {
   EnvironmentConfiguration.force(new EnvironmentConfiguration {
     override val LocalSpark: Boolean = true
     override val FeedsRootPath
-      : String = "file://" + new File("target/integration-test/feeds").getAbsolutePath + "/"
+      : String = "file:///" + (new File("target/integration-test/feeds").getAbsolutePath).replace("\\", "/") + "/"
     override val SigirRawDataPath
-      : String = "file://" + new File("src/test/data/sigir17").getAbsolutePath + "/"
+      : String = "file:///" + (new File("src/test/data/sigir17").getAbsolutePath).replace("\\", "/") + "/"
     override val DebugEnabled: Boolean = true
   })
 
+  // Leverage ScalaTest for Unit Testing Pipeline
   describe("the attractions recommender") {
     it("should run all the components successfully") {
       // Run the Pipeline via Drivers
