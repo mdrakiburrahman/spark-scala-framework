@@ -6,6 +6,14 @@ import scala.util.hashing.MurmurHash3
 
 import com.sparkscalafw.attractionsrecommender.serving.recommender.AttractionsRecommender
 
+/**
+  * Different decorations or permutations of the reccomender service. Allows for multiple
+  * renditions of the recommender in one single service - allows us to determine under which panel
+  * a User falls, and which reccomendation to use. Useful for A/B testing multiple model feeds.
+  *
+  * We do this by leveraging a hash of the User ID suffix with a salt on every prediction, to determine
+  * which reccomendation the user should be exposed to.
+  */
 class PaneledAttractionsRecommender(val panelToRecommender: Map[Int, AttractionsRecommender])
   extends AttractionsRecommender {
 

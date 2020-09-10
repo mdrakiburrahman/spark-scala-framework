@@ -51,25 +51,25 @@ A visual representation is presented below:<br><br>
     │                   │           SparkSessionManager.scala                  <- Utility for managing the provisioning of a Spark session. Supports both local and distributed (i.e. Databricks, Synapse).
     │                   │
     │                   ├───etl                                                <- Contains ETL components used to perform operations on data.
-    │                   │   │   EtlDriver.scala                                <- 
+    │                   │   │   EtlDriver.scala                                <- Driver for ETL Pipeline, contains high-level driver logic for initializing feeds from raw storage.
     │                   │   │
-    │                   │   ├───attractions                                    <-
-    │                   │   │   │   AttractionsLoader.scala                    <-
+    │                   │   ├───attractions                                    <- Subdirectory for holding dataset specific modules.
+    │                   │   │   │   AttractionsLoader.scala                    <- Trait definition for encapsulating method and field definitions for loading and transforming Attractions data.
     │                   │   │   │
-    │                   │   │   └───sigir                                      <-
-    │                   │   │           SigirAttractionsLoader.scala           <-
+    │                   │   │   └───sigir                                      <- Subdirectory for holding underlying source specific modules.
+    │                   │   │           SigirAttractionsLoader.scala           <- Dataset specific logic that may be counter-intuitive to further modularize, such as specific column-level transformations.
     │                   │   │
-    │                   │   └───visits                                         <-
-    │                   │       │   VisitsLoader.scala                         <-
+    │                   │   └───visits                                         <- Subdirectory for holding dataset specific modules.
+    │                   │       │   VisitsLoader.scala                         <- Trait definition for encapsulating method and field definitions for loading and transforming Visits data.
     │                   │       │
-    │                   │       └───sigir                                      <-
-    │                   │               SigirVisitsLoader.scala                <-
+    │                   │       └───sigir                                      <- Subdirectory for holding underlying source specific modules.
+    │                   │               SigirVisitsLoader.scala                <- Dataset specific logic that may be counter-intuitive to further modularize, such as specific column-level transformations.
     │                   │
     │                   ├───serving                                            <- Loads trained model and exposes a recommendations service. Supports different recommenders to coexist for A/B testing etc.
-    │                   │   │   ServingDriver.scala                            <-
+    │                   │   │   ServingDriver.scala                            <- Implementation of a A/B model serving pipeline driver that takes a list of users as the input for predictions.
     │                   │   │
-    │                   │   └───recommender                                    <-
-    │                   │       │   AttractionsRecommender.scala               <-
+    │                   │   └───recommender                                    <- Subdirectory for holding user recommendation model specific modules.
+    │                   │       │   AttractionsRecommender.scala               <- Trait definition for encapsulating method and field definitions for serving the user recommendation model.
     │                   │       │
     │                   │       ├───mapping                                    <-
     │                   │       │       MappingAttractionsRecommender.scala    <-
@@ -80,12 +80,12 @@ A visual representation is presented below:<br><br>
     │                   │       └───spark                                      <-
     │                   │               AlsAttractionsRecommender.scala        <-
     │                   │
-    │                   └───training                                           <- Reads transformed Training Data Feeds/Data Frames/Data Sets and trains ML models.
-    │                       │   EtlAndTrainingDriver.scala                     <- 
-    │                       │   TrainingDriver.scala                           <-
+    │                   └───training                                           <- Subdirectory for holding Model Training Pipelines.
+    │                       │   EtlAndTrainingDriver.scala                     <- Driver for Model training pipeline that reads directly from raw source, performs transformations and trains model.
+    │                       │   TrainingDriver.scala                           <- Driver for Model training pipeline that reads from feed, and trains model.
     │                       │
-    │                       └───spark                                          <-
-    │                               AlsAttractionsRecommenderTrainer.scala     <-
+    │                       └───spark                                          <- Subdirectory for holding Spark specific Model Training Pipelines.
+    │                               AlsAttractionsRecommenderTrainer.scala     <- Spark ALS Model Training and Tuning logic.
     │
     └───test                                                                   <- Artifact producing source directory for Testing Framework.
         ├───data                                                               <- Subdirectory for integration testing with data (can be pointer to ADLS instead).

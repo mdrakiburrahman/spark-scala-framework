@@ -11,21 +11,26 @@ import org.apache.spark.sql.functions.count
   */
 class SigirVisitsLoader(reader: SigirVisitsReader, transformer: SigirVisitsTransformer)
   extends VisitsLoader {
-
+  
+  // Extend Loader trait and override generic load behavior.
   override def load(): DataFrame = {
+    // Source specific read behavior, defined below.
     val rawVisits = reader.read()
+    // Perform source specific transformations on raw dataset as data prep for pipeline.
     transformer.transform(rawVisits)
   }
 }
 
 object SigirVisitsLoader {
-
+  
+  // Instantiate class.
   def apply(spark: SparkSession): SigirVisitsLoader =
     new SigirVisitsLoader(new SigirVisitsReader(spark), new SigirVisitsTransformer)
 }
 
 class SigirVisitsReader(spark: SparkSession) {
-
+  
+  // Read raw dataset from source (e.g. Parsed Zone).
   def read(): DataFrame =
     spark.read
       .option("header", true)
@@ -36,6 +41,7 @@ class SigirVisitsReader(spark: SparkSession) {
 
 class SigirVisitsTransformer {
 
+  // Transform raw DataFrame as the particular source demands.
   def transform(rawVisits: DataFrame): DataFrame =
     rawVisits
       .withColumnRenamed("nsid", VisitsColumnNames.UserId)

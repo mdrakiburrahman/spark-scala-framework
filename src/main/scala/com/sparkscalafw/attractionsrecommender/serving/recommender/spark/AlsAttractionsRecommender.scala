@@ -9,9 +9,13 @@ import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 import org.apache.spark.sql.functions.{col, hash}
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 
+/**
+  * Extends Attraction Recommender and overwrites the recommend method.
+  * Passes Spark ML a DataFrame for each record we need predictions performed on.
+  */
 class AlsAttractionsRecommender(val model: ALSModel, spark: SparkSession)
   extends AttractionsRecommender {
-
+  
   override def recommend(user: String): Seq[String] = {
     val recommendationsDf = model.recommendForUserSubset(predictionsDf(user), 10)
     Try(recommendationsDf.first()) match {
