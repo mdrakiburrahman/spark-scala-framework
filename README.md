@@ -1,13 +1,15 @@
 # `Spark-Scala-Framework`: A reusable ETL Framework, demonstrated on *Attractions Recommender* Pipeline
 <img src="https://image.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-260nw-1037719192.jpg" width="200"><br>
+{INSERT PRETTY LOGO HERE ON PURPLE BACKGROUND}
 ----------
 ## Overview
 This repository presents an organized approach at creating a complete ***"Software Product"*-style Reusable ETL Framework** on top of the Prototype/R&D *Recommendation Pipeline* developed in [INSERT LEGACY ETL CODE LINK](google.ca).<br>
 
 A visual representation is presented below:<br><br>
 <img src="https://image.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-260nw-1037719192.jpg" width="400"><br>
+{INSERT DIAGRAM HERE MAPPING FROM LEGACY TO NEW ON PURPLE BACKGROUND}
 
-## Repository Structure
+## Detailed Repository Structure
 ----------
 ```console
 │   pom.xml                                                                    <- Contains configurations (dependencies, build/source/test, plugins etc.) for maven build.
