@@ -28,7 +28,7 @@ class FullIntegrationTest extends AnyFunSpec with Matchers {
       : String = "file://" + new File("target/integration-test/feeds").getAbsolutePath + "/"
     override val SigirRawDataPath
       : String = "file://" + new File("src/test/data/sigir17").getAbsolutePath + "/"
-    override val DebugEnabled: Boolean = false
+    override val DebugEnabled: Boolean = true
   })
 
   describe("the attractions recommender") {
