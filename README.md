@@ -174,4 +174,158 @@ This is *extremely useful*, because:
 
 This descriptor prints basic stats about the data, and can be extended for any specific cases.
 
-An IDE is also a great tool for debugging, and the way in which the components are organized makes it easy to do interactive debugging of each piece in isolation.
+An IDE is also a great tool for debugging, and the way in which the components are organized makes it easy to do interactive debugging of each piece in isolation. <br><br>
+
+# How to use this framework - detailed steps
+ Detailed steps that was followed to set this up on a fresh Windows 10 VM from scratch.
+
+## Pre-requisites
+----------
+### Java 1.8
+Ensure you have Java version 1.8 installed. To check this, open Command Prompt, and type:
+```console
+java -version
+```
+You should see:<br>
+<img src="img/5.png" width="531"><br>
+
+If instead, you see this:<br>
+<img src="img/6.png" width="531"><br>
+
+That means you don't have **Java Development Kit (JDK)** installed. To install it, click [here](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html), and install the suitable one for your OS version.
+
+After installing, you should see the correct version "1.8.X_XXX", as well as **JDK** & **JRE** binaries populated here:<br>
+<img src="img/7.png" width="531"><br>
+
+### winutils
+
+WinUtils is required as we'll be leveraging Spark locally to persist files to our local filesystem. <br>
+
+Download **winutils.exe** from [here](https://github.com/cdarlint/winutils/tree/master/hadoop-3.2.1/bin):<br>
+<img src="img/20.png" width="620"><br>
+
+Then, follow these steps to add it in as an **Environment Variable**:<br>
+<img src="img/21.gif" width="800"><br>
+
+* Navigate to **C** drive, create a new folder **hadoop*
+* Create a new **bin** folder inside
+* Paste **winutils.exe** into **C:\hadoop\bin**
+* From **Start Menu**, search **Environment Variables** and click the search result
+* Click **Environment Variables**
+* Under **User variables for <user>**, click **New..**
+* Enter **Variable name: `HADOOP_HOME`** and  **Variable value: `C:\hadoop`**
+* Click **OK**
+* Under **System variables**, click **Path**, then click **Edit..**. Click **New**
+* Enter **`%HADOOP_HOME%\bin`**
+* Click **OK**, and **OK** again
+
+### IntelliJ IDEA
+
+We will be using **IntelliJ Community Edition** for it's awesome Scala development capabilities. If you don't have it, you can install a free version from their [website](https://www.jetbrains.com/idea/download/#section=windows):<br><br>
+<img src="img/8.png" width="800"><br>
+
+Highly recommended - go ahead and install it with default settings. <br>
+
+Open IntelliJ for the first time, and when prompted, click **Install** on Scala: <br>
+<img src="img/9.gif" width="800"><br>
+
+### Clone/download this repo
+
+Store the folder somewhere locally.
+
+### Project Setup
+----------
+Open the Repo's Root folder with IntelliJ: <br>
+<img src="img/10.gif" width="800"><br>
+
+If you get a popup from Windows Defender, click Allow - this is so that IntelliJ can connect to the internet and download dependencies etc.<br>
+
+Once all of the background activities/scans/downloads below finish:<br>
+<img src="img/11.png" width="447"><br>
+
+You should see this view in the Project window:<br>
+<img src="img/12.png" width="446"><br>
+
+Expand `src > test > scala > ... > attractionsrecommender` and double click `FullIntegrationTest.scala`:
+<img src="img/13.png" width="1280"><br>
+
+We will need to use the pop up buttons above to **Setup JDK** and **Setup Scala SDK**.
+
+Click **Setup JDK**, and you should see Java 1.8 get picked up from your system - click that:<br>
+<img src="img/14.png" width="251"><br>
+
+You should see JDK 1.8 get added to your `External Libraries`, and the pop up should disappear:<br>
+<img src="img/15.png" width="1280"><br>
+
+Next, click **Setup Scala SDK**, and click **Create > Download > 2.12.11**:<br>
+<img src="img/16.gif" width="800"><br>
+
+We need to mark our **Test Sources Root** Directory and **Sources Root** - as such:
+
+> Test Sources Root: `src > test > scala`<br>
+> Sources Root: `src > main > scala`
+
+To do this: **Right-Click on each folder > Mark Direcotry as > Test Sources Root/Sources Rooot**:<br>
+<img src="img/17.gif" width="800"><br>
+
+Now, we want to set up our Unit Test configuration, by performing the following steps:<br>
+<img src="img/18.gif" width="800"><br>
+* Click **Add Configuration..** on the top right-hand corner
+* Click the **+** icon
+* Select **ScalaTest**
+* Name the Configuration to **FullIntegrationTest** (or whatever you like)
+* In the **Test Class**, search for **FullIntegrationTest** and click the search result
+* Click OK
+
+We are now ready to run our end-to-end pipeline, and perform Unit Testing on it.
+
+### Run Automation Test and results
+----------
+#### End-to-end run
+To run the pipeline end-to-end as part of the **FullIntegrationTest** Driver, click run:<br>
+<img src="img/19.png" width="407"><br>
+
+We see:<br>
+<img src="img/22.gif" width="800"><br>
+
+* An initial Build takes place
+* A debug window pop up
+* The Pipeline gets invoked end-to-end (don't be scared by the reds, they're JVM logs)
+* The test case succeeds, and the unit test pipeline run ends
+
+**Some highlights**:
+
+We see output in white where our DataFrame is displayed as part of the debug pipeline:<br>
+<img src="img/23.png" width="1268"><br>
+
+We also see our describe statements in action - showing the statistical distribution of our data:<br>
+<img src="img/24.png" width="1268"><br>
+
+We see our Model Serving results in action:<br>
+<img src="img/25.png" width="1268"><br>
+
+And finally, the datasets that get generated as part of the unit test is available on a timestamped folder:<br>
+<img src="img/26.gif" width="800"><br>
+
+#### Debug mode
+The framework also allows us to insert breakpoints in our pipeline, and run evaluation statements against the breakpoint (including accessing values of Spark DataFrames). <br>
+
+To demonstrate, we insert a breakpoint before the `describe` in **`TrainingDriver.scala`**, and click Debug to run our debug pipeline once more:<br>
+<img src="img/27.gif" width="800"><br>
+
+We note that the code halts at the step where it hits the break point:<br>
+<img src="img/28.png" width="1268"><br>
+
+We can now type in the pop-up window to pass in statements into the debugger, to gain additional insights:<br>
+**`data.show()`**:<br>
+<img src="img/29.png" width="1268"><br>
+
+**`data.head(10)`**:<br>
+<img src="img/30.png" width="1268"><br>
+
+We note that we can see the schema in detail here as well. <br>
+
+**`data.count()`**:<br>
+<img src="img/31.png" width="1268"><br>
+
+And we can continue the code from here, after our interim commands are done executing as well.
