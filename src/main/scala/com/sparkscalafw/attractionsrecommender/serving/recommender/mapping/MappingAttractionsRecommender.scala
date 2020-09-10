@@ -4,7 +4,7 @@ import com.sparkscalafw.attractionsrecommender.serving.recommender.AttractionsRe
 
 /**
   * Extends Attraction Recommender and overwrites the recommend method.
-  * Receives a static mapping from users to recommendations for serving.
+  * Receives and produces a static mapping from users to recommendations for serving.
   */
 class MappingAttractionsRecommender(val mappings: Map[String, Seq[String]])
   extends AttractionsRecommender {

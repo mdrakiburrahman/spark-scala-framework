@@ -6,6 +6,12 @@ import com.sparkscalafw.attractionsrecommender.etl.visits.sigir.SigirVisitsLoade
 import com.sparkscalafw.attractionsrecommender.serving.recommender.spark.AlsAttractionsRecommender
 import com.sparkscalafw.attractionsrecommender.training.spark.AlsAttractionsRecommenderTrainer
 
+/**
+  * This is an alternate implementation of FileSystemDriver.scala, without us using the Drivers or Feeds at all.
+  * Rather, we are mixing and matching the different classes and traits to run the entire pipeline via Spark DataFrames - rather than Feeds.
+  * In other words, we are running everything on Spark Memory.
+  * We note that this doesn't allow us to decouple the key steps of our pipeline.
+  */
 object InMemoryDriver extends App {
 
   val spark = SparkSessionManager.session

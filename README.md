@@ -18,8 +18,8 @@ A visual representation is presented below:<br><br>
     │       └───com                                                            <- ... 
     │           └───sparkscalafw                                               <- ...
     │               └───attractionsrecommender                                 <- ... 
-    │                   │   FileSystemDriver.scala                             <- 
-    │                   │   InMemoryDriver.scala                               <-
+    │                   │   FileSystemDriver.scala                             <- A top level driver that runs the entire pipeline components per driver, achieving decoupling via our feeds framework.
+    │                   │   InMemoryDriver.scala                               <- A top level driver that runs the entire pipeline entirely on Spark Memory without drivers or feeds - and hence being coupled.
     │                   │
     │                   ├───common                                             <- Contains common definitions and utilities shared by many components.
     │                   │   ├───config                                         <- Subdirectory for holding configuration files.
@@ -71,14 +71,14 @@ A visual representation is presented below:<br><br>
     │                   │   └───recommender                                    <- Subdirectory for holding user recommendation model specific modules.
     │                   │       │   AttractionsRecommender.scala               <- Trait definition for encapsulating method and field definitions for serving the user recommendation model.
     │                   │       │
-    │                   │       ├───mapping                                    <-
-    │                   │       │       MappingAttractionsRecommender.scala    <-
+    │                   │       ├───mapping                                    <- Subdirectory for holding underlying map based (static) recommender modules.
+    │                   │       │       MappingAttractionsRecommender.scala    <- A simple static recommender that receives and produces a static mapping from users to recommendations for serving.
     │                   │       │
-    │                   │       ├───paneling                                   <-
-    │                   │       │       PaneledAttractionsRecommender.scala    <-
+    │                   │       ├───paneling                                   <- Subdirectory for holding underlying panel based (dynamic) recommender modules.
+    │                   │       │       PaneledAttractionsRecommender.scala    <- Recommender Service that allows for multiple renditions in one single service - great for A/B testing between models.
     │                   │       │
-    │                   │       └───spark                                      <-
-    │                   │               AlsAttractionsRecommender.scala        <-
+    │                   │       └───spark                                      <- Subdirectory for holding Spark specific Model Prediction Pipelines.
+    │                   │               AlsAttractionsRecommender.scala        <- Passes Spark ALS model a DataFrame containing each record we need predictions performed on.
     │                   │
     │                   └───training                                           <- Subdirectory for holding Model Training Pipelines.
     │                       │   EtlAndTrainingDriver.scala                     <- Driver for Model training pipeline that reads directly from raw source, performs transformations and trains model.
@@ -106,7 +106,7 @@ A visual representation is presented below:<br><br>
             └───com                                                            <- ...
                 └───sparkscalafw                                               <- ...
                     └───attractionsrecommender                                 <- ...
-                            FullIntegrationTest.scala                          <- 
+                            FullIntegrationTest.scala                          <- Integration & unit testing pipeline that is able to perform automated tests by enforcing environment configurations.
 ```
 ----------
 ## Feature Description
@@ -127,7 +127,7 @@ The *Recommender Pipeline* is split into four independent, reusable components:
 4. **training -** reads the `visits` feed and trains the ALS model. Currently we are demo-ing the Pipeline using Spark's [Alternating Least Squares](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.recommendation.ALS) algorithm, though this can be easily expanded to any library by leveraging the presented structure.
 
 Screenshot of each component from the repository:<br>
-<img src="img/2.png" width="125"><br>
+<img src="img/2.png" width="150"><br>
 
 ### Configuration
 
@@ -140,7 +140,7 @@ The common package contains a simple framework for handling feeds, to which the 
 These feeds are stored in a file system, in a root path that should be provided via configurations. By using this feed framework, different components can run completely independently and easily synchronize using a file system acting as a "whiteboard".
 
 This can include DBFS local file system and mounted storage (e.g. ADLS) to be supported seamlessly - e.g. once the ADLS Filesystem is mounted on a Databricks Workspace, it can be accessed via `/mnt/`. Also, the feeds framework handles the versioning of the different updates in a feed using update timestamps in a transparent way, enhancing the auditability of the system. Of course, leveraging **Delta Lake** would achieve the same purpose, although this is an enhancement we can build into this repository quite easily (currently includes classes for `CSV` and `Parquet` Feeds):<br><br>
-<img src="img/3.png" width="175">
+<img src="img/3.png" width="185">
 
 ### Paneled Recommender
 
@@ -154,12 +154,14 @@ A few things to note:
 
 ### Drivers
 
-A few driver apps are included for the different components. Even though these should be helpful (especially the component-specific drivers that use feeds for synchronizing with other components), one could also compose the units in the code in any way needed.
+The idea behind a driver is, each independent component of the pipeline (**etl**, **serving**, **training**) are mutually exclusive (when leveraging feeds). A Driver is essentially a top-level program that triggers each component in sequence, allowing for controlled execution. This also allows us to mix-and-match components, in order to produce Drivers that represent a complete ETL job.
+
+A few driver apps are included for the different components with this repository. Even though these should be helpful (especially the component-specific drivers that use feeds for synchronizing with other components), one could also compose the units in the code in any way needed.
 
 ### Debugging
 
 The common package contains a DataFrame descriptor utility that is only initiated - by design - when `debug` is configured to be enabled:<br>
-<img src="img/4.png" width="800"><br>
+<img src="img/4.png" width="1000"><br>
 
 This is *extremely useful*, because:
 - We want to use the same code in `DEV`, `TEST` & `PROD` without commenting out lines for verbose logging

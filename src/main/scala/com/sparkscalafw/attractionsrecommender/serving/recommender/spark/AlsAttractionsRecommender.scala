@@ -11,7 +11,7 @@ import org.apache.spark.sql.types.{StringType, StructField, StructType}
 
 /**
   * Extends Attraction Recommender and overwrites the recommend method.
-  * Passes Spark ML a DataFrame for each record we need predictions performed on.
+  * Passes Spark ALS model a DataFrame containing each record we need predictions performed on.
   */
 class AlsAttractionsRecommender(val model: ALSModel, spark: SparkSession)
   extends AttractionsRecommender {
