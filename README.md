@@ -2,7 +2,7 @@
 <img src="img/sparky.png" width="400"><br>
 ----------
 ## Overview
-This repository presents an organized approach at creating a complete ***"Software Product"*-style Reusable ETL Framework** on top of the Prototype/R&D *Recommendation Pipeline* developed in [INSERT LEGACY ETL CODE LINK](google.ca).<br>
+This repository presents an organized approach at creating a complete ***"Software Product"*-style Reusable ETL Framework** on top of the Prototype/R&D *Recommendation Pipeline* developed in [this example notebook](non-reusable-ETL-example.html).<br>
 
 A visual representation is presented below:<br><br>
 <img src="https://image.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-260nw-1037719192.jpg" width="400"><br>
