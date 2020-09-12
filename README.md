@@ -5,8 +5,7 @@
 This repository presents an organized approach at creating a complete ***"Software Product"*-style Reusable ETL Framework** on top of the Prototype/R&D *Non-Reusable Pipeline* demonstrated in [this example notebook](non-reusable-ETL-example.ipynb).<br>
 
 A visual representation of how this is achieved is presented below:<br><br>
-<img src="https://image.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-260nw-1037719192.jpg" width="400"><br>
-{INSERT DIAGRAM HERE MAPPING FROM LEGACY TO NEW ON PURPLE BACKGROUND}
+<img src="img/detailed-mapping.png" width="1920"><br>
 
 ## Detailed Repository Structure
 ----------
