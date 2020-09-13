@@ -1,5 +1,5 @@
 # `Sparky`: A reusable ETL Framework (demonstrated on **[Sigir17](https://sites.google.com/site/limkwanhui/datacode)** Dataset)
-<div style="text-align:left"><img src="img/sparky.png" width="800"></div><br>
+<div style="text-align:center"><img src="img/sparky.png" width="800"></div><br>
 
 ## Overview
 This repository presents an organized approach at creating a complete ***"Software Product"*-style Reusable ETL Framework** on top of the *Baseline ETL Pipeline* demonstrated in [this example notebook](baseline-ETL-example.ipynb).<br>
