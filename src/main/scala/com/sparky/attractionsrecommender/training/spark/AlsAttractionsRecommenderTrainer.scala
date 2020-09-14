@@ -21,7 +21,7 @@ class AlsAttractionsRecommenderTrainer {
   // Define training activities - can be easily expanded to multi-step/iterations, as desired.
   def train(visits: DataFrame): ALSModel = als.fit(trainingData(visits))
 
-  // Define transformation logic for Training DataFrame
+  // Define Feature Engineering Transformation logic for Training DataFrame
   private def trainingData(visits: DataFrame): DataFrame =
     visits.withColumn(VisitsColumnNames.UserId, hash(col(VisitsColumnNames.UserId)))
 }
